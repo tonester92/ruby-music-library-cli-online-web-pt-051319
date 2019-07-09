@@ -1,13 +1,12 @@
 class MusicLibraryController
 
   def initialize(path = './db/mp3s')
-    music_importer = MusicImporter.new(path)
-    Song.all << music_importer.import
+    importer = MusicImporter.new(path)
+    importer.import
   end
 
   def call
     input = ''
-  
     while input != 'exit'
       puts "Welcome to your music library!"
       puts "To list all of your songs, enter 'list songs'."
@@ -19,6 +18,7 @@ class MusicLibraryController
       puts "To quit, type 'exit'."
       puts "What would you like to do?"
       input = gets.chomp
+      
       case input
       when 'list songs'
         self.list_songs
@@ -36,10 +36,10 @@ class MusicLibraryController
         self.play_song
       else
         "Type in a valid request please"
+      end
     end
-   end
   end
-  
+
   def list_songs
     Song.all.sort {|a,b| a.name <=> b.name}.each.with_index(1) do |song, i|
       puts "#{i}. #{song.artist.name} - #{song.name} - #{song.genre.name}"
@@ -55,7 +55,7 @@ class MusicLibraryController
     genres = Genre.all.sort {|a,b| a.name <=> b.name}
     genres.each.with_index(1) {|genre, i| puts "#{i}. #{genre.name}"}
   end
-  
+
   def list_songs_by_artist
     puts "Please enter the name of an artist:"
     input = gets.strip
